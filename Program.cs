@@ -1,61 +1,39 @@
-﻿// Program.cs — uden raw string literal (løser CS8999)
-using System;
-using System.Collections.Generic;
-
-namespace SparePartsInventoryAssistant;
-
-internal static class Program
+class Program
 {
-    private static void Main()
+    static void Main(string[] args)
     {
-        Console.WriteLine(AssistantData.Greeting);
+        // fixed inventory
+        string part1 = "hydraulic pump";
+        string part2 = "PLC module";
+        string part3 = "servo motor";
 
-        bool partAvailable = false;
-        while (!partAvailable)
+        Console.WriteLine("Hej. Welcome to the spare parts inventory!");
+        
+        bool partFound = false;
+
+        while (!partFound)
         {
-            Console.Write(AssistantData.Question + " ");
-            var line = Console.ReadLine();
+            Console.Write("Which part do you need? ");
+            string partName = Console.ReadLine();
 
-            if (line is null) break; // EOF (Ctrl-D/Ctrl-Z)
-
-            if (AssistantData.Parts.Contains(line))
+            // check if part is in stock
+            if (partName == part1 || partName == part2 || partName == part3)
             {
-                Console.WriteLine(string.Format(AssistantData.ReplyPositive, line));
-                partAvailable = true;
+                Console.WriteLine($"I've got {partName} here for you 😊");
+                partFound = true;
             }
-            else if (AssistantData.UserQuestions.Contains(line))
+            else if (partName == "Do you actually have any parts?" ||
+                     partName == "Is there anything in stock at all?")
             {
-                Console.WriteLine(
-                    string.Format(AssistantData.ReplyNumberOfParts, AssistantData.Parts.Count)
-                    + "\n" + string.Join("\n", AssistantData.Parts)
-                );
+                Console.WriteLine("We have 3 part(s)!");
+                Console.WriteLine(part1);
+                Console.WriteLine(part2);
+                Console.WriteLine(part3);
             }
             else
             {
-                Console.WriteLine(string.Format(AssistantData.ReplyNegative, line));
+                Console.WriteLine($"I am afraid we don’t have any {partName} in the inventory 😔");
             }
         }
     }
-}
-
-internal static class AssistantData
-{
-    public static readonly List<string> Parts = new()
-    {
-        "hydraulic pump",
-        "PLC module",
-        "servo motor"
-    };
-
-    public const string Greeting = "Hej. Welcome to the spare parts inventory!";
-    public const string Question = "Which part do you need?";
-    public const string ReplyPositive = "I've got {0} here for you 😊. Bye!";
-    public const string ReplyNegative = "I am afraid we don’t have any {0} in the inventory";
-    public const string ReplyNumberOfParts = "We have {0} part(s)!";
-
-    public static readonly List<string> UserQuestions = new()
-    {
-        "Do you actually have any parts?",
-        "Is there anything in stock at all?",
-    };
 }
